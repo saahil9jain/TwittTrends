@@ -1,0 +1,25 @@
+Assignment 1: TwittMap with Trends
+
+The goal of this assignment is to provide you experience in developing and deploying a web application using AWS Cloud services. Your web application would collect Twitts and do some processing and represent the Twitts on GoogleMaps. Following are the required steps:  
+
+Use Twitter Streaming API (Links to an external site.) to fetch tweets from the twitter hose in real-time.
+Use ElasticSearch (Links to an external site.) or AWS (Links to an external site.) ElasticSearch  (Links to an external site.)to store the tweets on the backend
+Create a web UI that allows users to search for a few keywords (via a dropdown). The keywords (up to 10) can be of your choosing.
+Use Google Maps API  (Links to an external site.)(or any other mapping library) to render these filtered tweets in the map in whatever manner you want.
+Deploy your application on AWS Elastic Beanstalk (Links to an external site.) in an auto-scaling environment.
+Bonus: Use ElasticSearch’s (Links to an external site.) geospatial feature that shows tweets that are within a certain distance from the point the user clicks on the map. 
+You can choose whichever backend data services if you need any. Also feel free to choose any Web Application Framework. We've provided you with a comprehensive list of frameworks and tutorials on this page. 
+
+How to get started? 
+
+Develop a web app with something simple and deploy that using Elastic Bean Stalk.
+Modify your webapp to be able to put a tag on a map using GoogleMaps API.
+Use Twitter API to collect 10MB or so Twitts and process these offline. Allow user to search along few key words and display those twitts on the map. You also extract location tags when available from the Twitts. If no geotag available, you may infer the location from the keywords (i.e., any mention of places), if no mention of places, then feel free to choose a location randomly. 
+Next you may want to look at streaming API to get the twitts in real-time and process and add to the whole process. 
+Here's an example of plotting tweets on a map :  https://worldmap.harvard.edu/tweetmap/ (Links to an external site.)
+
+What to Submit?  - 2 URLs
+
+The URL of your Elastic Beanstalk, where we can visit your webpage directly.
+ All of the assignment code, submitted as a tagged release on github (https://help.github.com/articles/creating-releases/ (Links to an external site.)). The release must be made before the deadline. Once you've made the release, submit the URL of the release so that we know that you got it in before your deadline.
+

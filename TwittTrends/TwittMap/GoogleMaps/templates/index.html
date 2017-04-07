@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+      /* Makes the sample page fill the window (for a nice search bar) */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      h3 {
+        margin: 10px;
+      }
+      /* Search Bar */
+      input[type=text] {
+        width: 130px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: white;
+        background-position: 10px 10px;
+        background-repeat: no-repeat;
+        -webkit-transition: width 0.4s ease-in-out;
+        transition: width 0.4s ease-in-out;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h3>TwittMap by Mounika Bodapati, Saahil Jain</h3>
+    <h3>
+      <form id="listform" class="navbar-form navbar-right"> {% csrf_token %}
+            <input type="text" name="searchTerm" id="searchTerm" class="form-control" placeholder="Enter search term...">
+            <input type="submit" name="submit_btn" value="Search" onsubmit="initMap()"/>
+      </form>
+    </h3>
+
+    <div id="map"></div>
+    <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 2,
+          center: new google.maps.LatLng(2.8,-187.3),
+          mapTypeId: 'terrain'
+        });
+
+        // Loop through tweets and place markers of respective tweets on map
+        {#---Ajax---#}
+        $('#listform').on('submit', function (event) {
+            event.preventDefault();
+            var key = $('input[name="searchTerm"]').val();
+            $.ajax({
+                url: '/post/',
+                type: 'POST',
+                data: {Search: key, csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()},
+
+                success: function (data) {
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 2,
+                        center: new google.maps.LatLng(2.8,-187.3)
+                    });
+                    size = data.tweets.length // # of Tweets to process
+                    for(var i = 0; i < size; i++) {
+                        var location = new google.maps.LatLng(data.coordinates[i].lat, data.coordinates[i].lon);
+                        var twitt = data.tweets[i]
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: location
+                        });
+
+                        displayTweetMessage(marker, twitt);
+                    }
+                }
+            });
+        });
+        // Display tweet message when market is clicked
+        function displayTweetMessage(marker, tweet){
+          marker.addListener('click', function(){
+             var infowindow = new google.maps.InfoWindow();
+             var contentString = 'Tweet: '+ tweet + ', Location: '+ marker.position;
+             infowindow.setContent(contentString);
+             infowindow.open(map,marker);
+          });
+        }
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhwIAtEldiVN44S5S7o3qsexQbaB2hm5g&callback=initMap">
+    </script>
+  </body>
+</html>
