@@ -1,25 +1,54 @@
-Assignment 1: TwittMap with Trends
+Objectives
 
-The goal of this assignment is to provide you experience in developing and deploying a web application using AWS Cloud services. Your web application would collect Twitts and do some processing and represent the Twitts on GoogleMaps. Following are the required steps:  
+Use the Amazon SQS service (Links to an external site.) to create a processing queue for the Tweets that are delivered by the Twitter Streaming API
+Use Amazon SNS service (Links to an external site.) to update the status processing on each tweet so the UI can refresh.
+Integrate a third party cloud service API into the Tweet processing flow.
+Overview
 
-Use Twitter Streaming API (Links to an external site.) to fetch tweets from the twitter hose in real-time.
-Use ElasticSearch (Links to an external site.) or AWS (Links to an external site.) ElasticSearch  (Links to an external site.)to store the tweets on the backend
-Create a web UI that allows users to search for a few keywords (via a dropdown). The keywords (up to 10) can be of your choosing.
-Use Google Maps API  (Links to an external site.)(or any other mapping library) to render these filtered tweets in the map in whatever manner you want.
-Deploy your application on AWS Elastic Beanstalk (Links to an external site.) in an auto-scaling environment.
-Bonus: Use ElasticSearch’s (Links to an external site.) geospatial feature that shows tweets that are within a certain distance from the point the user clicks on the map. 
-You can choose whichever backend data services if you need any. Also feel free to choose any Web Application Framework. We've provided you with a comprehensive list of frameworks and tutorials on this page. 
+Streaming
 
-How to get started? 
+Reads a stream of tweets from the Twitter Streaming API. Note: you might follow a set of specific keywords that you find interesting
+After fetching a new tweet, check to see if it has geolocation info and is in English.
+Once the tweet validates these filters, send a message to SQS for asynchronous processing on the text of the tweet
+Worker
 
-Develop a web app with something simple and deploy that using Elastic Bean Stalk.
-Modify your webapp to be able to put a tag on a map using GoogleMaps API.
-Use Twitter API to collect 10MB or so Twitts and process these offline. Allow user to search along few key words and display those twitts on the map. You also extract location tags when available from the Twitts. If no geotag available, you may infer the location from the keywords (i.e., any mention of places), if no mention of places, then feel free to choose a location randomly. 
-Next you may want to look at streaming API to get the twitts in real-time and process and add to the whole process. 
-Here's an example of plotting tweets on a map :  https://worldmap.harvard.edu/tweetmap/ (Links to an external site.)
+Define a worker pool that will pick up messages from the queue to process. These workers should each run on a separate pool thread.
+Make a call to the sentiment API off your preference (e.g. Alchemy (Links to an external site.)). This can return a positive, negative or neutral sentiment evaluation for the text of the submitted Tweet.
+As soon as the tweet is processed send a notification -using SNS- to an HTTP endpoint (Links to an external site.) that contains the information about the tweet.
+Backend
 
-What to Submit?  - 2 URLs
+On receiving the notification, index this tweet in Elasticsearch. Make sure you preserve the sentiment of the tweet as well.
+The backend should provide the functionality to the user to search for tweets that match a particular keyword. To this end, you can either write a new webserver or simply reuse your first assignment.
+Frontend
 
-The URL of your Elastic Beanstalk, where we can visit your webpage directly.
- All of the assignment code, submitted as a tagged release on github (https://help.github.com/articles/creating-releases/ (Links to an external site.)). The release must be made before the deadline. Once you've made the release, submit the URL of the release so that we know that you got it in before your deadline.
+When a new tweet is indexed, provide some visual indication on the frontend. (Like red color for negative, green color for positive)
+Give the user the ability to search your index via a free text input or a dropdown.
+Plot the tweets that match the query on a map. (use markers (Links to an external site.))
+Lastly, use a custom marker (Links to an external site.) to indicate the sentiment. Alternatively, you can come up with any other style to represent the sentiment of the tweet.
+Deployment
 
+Deploy your application, the streaming script, the worker etc. on AWS.
+You are free to use Elastic beanstalk or manually configure EC2 for deploying different components of your application.
+Architecture Diagram
+
+Below is an architecture diagram (Links to an external site.) to help you visualize the pieces together
+
+
+
+ Extra Credit: Use Kafka as the EventQueue.
+
+You can choose to do this assignment either individually or in pairs.
+
+
+
+What to Submit
+
+Submit a text file with link to your Github repo tagged release and the beanstalk URL for your app. Don't forget to add the TAs as collaborators on your Github repo.
+
+All the best!
+
+
+
+Points
+
+100 + 20
