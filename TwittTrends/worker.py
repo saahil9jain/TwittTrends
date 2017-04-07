@@ -4,7 +4,6 @@ from time import sleep
 import boto3
 import json
 from watson_developer_cloud import AlchemyLanguageV1
-from pyes import *
 from concurrent.futures import ThreadPoolExecutor
 
 
