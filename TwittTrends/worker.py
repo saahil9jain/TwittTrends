@@ -11,38 +11,38 @@ arn = 'arn:aws:sns:us-east-1:332176844987:TwittTrends'
 queueName = 'TwittTrends'
 alchemyapi = AlchemyLanguageV1(api_key='bb4bc7f058004c73d08b9983fc76e84af3701e0f')
 
-thread_waittime =  15
-working = 20
+thread_waittime =  10
+working = 10
 
 sqs = boto3.resource('sqs')
 sns = boto3.resource('sns')
 
 # Get the queue. This returns an SQS.Queue instance
-queue = sqs.get_queue_by_name(QueueName=queueName)
+queue = sqs.Queue('https://sqs.us-east-1.amazonaws.com/332176844987/TwittTrends')
 endpoint = sns.PlatformEndpoint(arn)
 
 
 
-tweet_count = 0
 
 def parse_tweet():
-
-    tweet_count += 1
+    print("sleep")
     sleep(working)
-
+    print("done sleep")
     for message in queue.receive_messages(MessageAttributeNames=['All'], VisibilityTimeout=30, MaxNumberOfMessages=1):
-
+        print("moo")
+        print(message)
         if message.message_attributes is not None:
-
+            print("moo1")
             snsMsg = {}
             ## geo
             coordinates = message.message_attributes.get('coordinates').get('StringValue')
+            print(coordinates)
             if coordinates:
                 ## sentiment
 
                 tweet_text = message.body
                 response = alchemyapi.sentiment(text=tweet_text)
-
+                print(response)
                 if response['status'] == 'OK':
 
                     sentimentResult = response["docSentiment"]
@@ -52,14 +52,15 @@ def parse_tweet():
                     snsMsg['coordinates'] = coordinates
                     ## dump snsMsg and send message to SNS
                     snsMessage = json.dumps(snsMsg)
+                    print(snsMsg['sentiment'])
                     response = endpoint.publish(Message=snsMessage,Subject='TwittTrends')
-
         # Let the queue know that the message is processed
         message.delete()
 
 
 
 def main():
+    parse_tweet()
     executor = ThreadPoolExecutor(max_workers=7)
     while True:
         executor.submit(parse_tweet)
