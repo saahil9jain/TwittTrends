@@ -27,9 +27,7 @@ queue = conn.create_queue('TwittTrends')
 
 
 def parse_tweet():
-    print("sleep")
-    #sleep(working)
-    print("done sleep")
+    sleep(working)
     for message in queue.get_messages(1):
         if message.get_body() is not None:
             tweet_json = json.loads(message.get_body())
@@ -47,7 +45,6 @@ def parse_tweet():
                 snsMsg['coordinates'] = coordinates
                 ## dump snsMsg and send message to SNS
                 snsMessage = json.dumps(snsMsg)
-                print(snsMsg['sentiment'])
                 response = endpoint.publish(Message=snsMessage,Subject='TwittTrends')
         # Let the queue know that the message is processed
         message.delete()
