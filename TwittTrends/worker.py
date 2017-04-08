@@ -26,34 +26,32 @@ endpoint = sns.PlatformEndpoint(arn)
 
 def parse_tweet():
     print("sleep")
-    sleep(working)
+    #sleep(working)
     print("done sleep")
     for message in queue.receive_messages(MessageAttributeNames=['All'], VisibilityTimeout=30, MaxNumberOfMessages=1):
         print("moo")
-        print(message)
-        if message.message_attributes is not None:
+        if message.body is not None:
+            print(message.body)
+            tweet_json = json.loads(message.body)
             print("moo1")
             snsMsg = {}
             ## geo
-            coordinates = message.message_attributes.get('coordinates').get('StringValue')
-            print(coordinates)
-            if coordinates:
-                ## sentiment
+            coordinates = tweet_json['coordinates']
+            tweet_text = tweet_json['text']
+            print(tweet_text)
+            response = alchemyapi.sentiment(text=tweet_text)
+            print(response)
+            if response['status'] == 'OK':
 
-                tweet_text = message.body
-                response = alchemyapi.sentiment(text=tweet_text)
-                print(response)
-                if response['status'] == 'OK':
+                sentimentResult = response["docSentiment"]
 
-                    sentimentResult = response["docSentiment"]
-
-                    snsMsg['sentiment'] = sentimentResult
-                    snsMsg['tweet'] = message.body
-                    snsMsg['coordinates'] = coordinates
-                    ## dump snsMsg and send message to SNS
-                    snsMessage = json.dumps(snsMsg)
-                    print(snsMsg['sentiment'])
-                    response = endpoint.publish(Message=snsMessage,Subject='TwittTrends')
+                snsMsg['sentiment'] = sentimentResult
+                snsMsg['tweet'] = message.body
+                snsMsg['coordinates'] = coordinates
+                ## dump snsMsg and send message to SNS
+                snsMessage = json.dumps(snsMsg)
+                print(snsMsg['sentiment'])
+                response = endpoint.publish(Message=snsMessage,Subject='TwittTrends')
         # Let the queue know that the message is processed
         message.delete()
 
