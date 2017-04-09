@@ -12,23 +12,25 @@ def index(request):
 	return render(request, 'index.html')
 
 def post(Request):
-	if Request.method == "POST":
-	    msg = Request.POST.get('Search', None)
-	elastic = 'http://search-twitter-map-obukguehsa2d4it32tto6i3vbm.us-east-1.es.amazonaws.com/twitter/_search?q='
-	response = requests.get(elastic+msg+"&size=100")
-	json_response = json.loads(response.text)
-	tweet = []
-	coordinates = []
-	for resp in json_response['hits']['hits']:
-	    tweet.append(resp['_source']['text'])
-	    coordinates.append(resp['_source']['coordinates'])
-	data = {'coordinates': coordinates, 'tweets': tweet}
-	print(data)
-	return JsonResponse(data)
+    if Request.method == "POST":
+        msg = Request.POST.get('Search', None)
+    elastic = 'http://search-twitter-map-obukguehsa2d4it32tto6i3vbm.us-east-1.es.amazonaws.com/twittertrend/_search?q='
+    response = requests.get(elastic+msg+"&size=100")
+    json_response = json.loads(response.text)
+    tweet = []
+    coordinates = []
+    sentiments = []
+    for resp in json_response['hits']['hits']:
+        tweet.append(resp['_source']['text'])
+        coordinates.append(resp['_source']['coordinates'])
+        sentiments.append(resp['_source']['sentiment']['type'])
+    data = {'coordinates': coordinates, 'tweets': tweet, 'sentiments': sentiments}
+    print(data)
+    return JsonResponse(data)
 
 def snspoll(request):
-	context={"message":"confirmation"}
-    if request.method=="GET":
+    context={"message":"confirmation"}
+    if request.method == "GET":
         return render(request,'index.html')
     else:
         header=json.loads(request.body)
@@ -47,6 +49,6 @@ def snspoll(request):
                 "coordinates":{"lat":lat,"lon":lon},
                 "sentiment":sentiment
             }
-            requests.post(ELASTICSEARCHCLUSTER_LINK,json=tweet_data)
+            requests.post("search-twitter-map-obukguehsa2d4it32tto6i3vbm.us-east-1.es.amazonaws.com/twittertrend/tweets",json=tweet_data)
             context={"message": "notification"}
     return render(request,'index.html',context)

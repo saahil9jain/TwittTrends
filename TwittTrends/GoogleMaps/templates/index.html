@@ -73,9 +73,23 @@
                     for(var i = 0; i < size; i++) {
                         var location = new google.maps.LatLng(data.coordinates[i].lat, data.coordinates[i].lon);
                         var twitt = data.tweets[i]
+                        var sentiment = data.sentiments[i]
+
+                        //Get color of sentiment
+                        var iconLink = ''
+                        if (sentiment == "positive") {
+                          var iconLink = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                        }
+                        if (sentiment == "negative") {
+                          var iconLink = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                        }
+                        if (sentiment == "neutral") {
+                          var iconLink = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                        }
                         var marker = new google.maps.Marker({
                             map: map,
-                            position: location
+                            position: location,
+                            icon: iconLink
                         });
 
                         displayTweetMessage(marker, twitt);
