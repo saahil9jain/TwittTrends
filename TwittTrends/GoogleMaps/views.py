@@ -60,6 +60,5 @@ def snspoll(request):
             tweet_data = {'tweet': tweet, 'coordinates': {'lat': lat,
                           'lon': lon}, 'sentiment': sentiment}
             requests.post('http://search-twitter-map-obukguehsa2d4it32tto6i3vbm.us-east-1.es.amazonaws.com/twittertrend/tweets', json=tweet_data)
-            print(requests.status)
             context = {'message': 'notification'}
     return render(request, 'index.html', context)
