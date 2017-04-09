@@ -11,7 +11,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
-import urllib2
+from urllib.request import urlopen
 
 
 def index(request):
@@ -50,7 +50,7 @@ def snspoll(request):
         header = json.loads(body_unicode)
         if header['Type']=="SubscriptionConfirmation":
             subscribleURL=header['SubscribeURL']
-            urllib2.urlopen(subscribleURL).read()
+            urlopen(subscribleURL).read()
         elif header['Type'] == 'Notification':
             message = json.loads(json.loads(header['Message'
                                  ]).get('default'))
