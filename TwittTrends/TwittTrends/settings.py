@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '_tbgp$z^h$myf2%m-rjsv&sfqd!nq+yj6i9_q^9c*3a@3w23@w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['TwittTrends.fmpst3p3md.us-east-1.elasticbeanstalk.com', '127.0.0.1']
 
