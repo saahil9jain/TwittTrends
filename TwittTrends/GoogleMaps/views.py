@@ -53,8 +53,8 @@ def snspoll(request):
         elif header['Type'] == 'Notification':
             message = json.loads(json.loads(header['Message']).get('default'))
             tweet = message['tweet']
-            lat = message['lat']
-            lon = message['lon']
+            lat = message['coordinates']['lat']
+            lon = message['coordinates']['lon']
             sentiment = message['sentiment']
 
             tweet_data = {'tweet': tweet, 'coordinates': {'lat': lat,
