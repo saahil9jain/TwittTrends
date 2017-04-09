@@ -37,8 +37,8 @@ def snspoll(request):
     if request.method == "GET":
         return render(request,'index.html')
     else:
-		body_unicode = request.body.decode('utf-8')
-        header=json.loads(body_unicode)
+        body_unicode = request.body.decode('utf-8')
+        header = json.loads(body_unicode)
         if header['Type']=="SubscriptionConfirmation":
             subscribleURL=header['SubscribeURL']
             urllib2.urlopen(subscribleURL).read()
