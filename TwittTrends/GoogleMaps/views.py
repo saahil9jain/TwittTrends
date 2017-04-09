@@ -23,8 +23,7 @@ def post(Request):
         msg = Request.POST.get('Search', None)
     if Request.method == 'GET':
         msg = Request.GET.get('Search', None)
-    elastic = \
-        'http://search-twitter-map-obukguehsa2d4it32tto6i3vbm.us-east-1.es.amazonaws.com/twittertrend/_search?q='
+    elastic = 'http://search-twitter-map-obukguehsa2d4it32tto6i3vbm.us-east-1.es.amazonaws.com/twittertrend/_search?q='
     response = requests.get(elastic + msg + '&size=100')
     json_response = json.loads(response.text)
     tweet = []
@@ -61,7 +60,7 @@ def snspoll(request):
 
             tweet_data = {'tweet': tweet, 'coordinates': {'lat': lat,
                           'lon': lon}, 'sentiment': sentiment}
-            requests.post('search-twitter-map-obukguehsa2d4it32tto6i3vbm.us-east-1.es.amazonaws.com/twittertrend/tweets'
+            requests.post('http://search-twitter-map-obukguehsa2d4it32tto6i3vbm.us-east-1.es.amazonaws.com/twittertrend/tweets'
                           , json=tweet_data)
             context = {'message': 'notification'}
     return render(request, 'index.html', context)
