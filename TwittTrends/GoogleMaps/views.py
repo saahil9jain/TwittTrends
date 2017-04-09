@@ -11,6 +11,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
+import urllib2
 
 
 def index(request):
