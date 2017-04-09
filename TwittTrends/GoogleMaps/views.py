@@ -5,6 +5,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import render
 from django.http import HttpResponse, request, JsonResponse
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
 
@@ -30,6 +31,7 @@ def post(Request):
     print(data)
     return JsonResponse(data)
 
+@csrf_exempt
 def snspoll(request):
     context={"message":"confirmation"}
     if request.method == "GET":
