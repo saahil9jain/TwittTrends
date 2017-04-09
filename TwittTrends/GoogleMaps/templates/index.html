@@ -94,6 +94,18 @@
 
                         displayTweetMessage(marker, twitt);
                     }
+                    query()
+                    function query() {
+                      $.ajax({
+                        url: '/post/',
+                        type: 'GET',
+                        data: {Search: key, csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()},
+                        success: function (data) {
+                          // testing
+                        }
+                      });
+                      setInterval(query, 1000)
+                    }
                 }
             });
         });
