@@ -32,7 +32,7 @@ def post(Request):
     for resp in json_response['hits']['hits']:
         tweet.append(resp['_source']['text'])
         coordinates.append(resp['_source']['coordinates'])
-        sentiments.append(resp['_source']['sentiment']['type'])
+        sentiments.append(resp['_source']['sentiment'])
     data = {'coordinates': coordinates, 'tweets': tweet,
             'sentiments': sentiments}
     print (data)
