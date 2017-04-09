@@ -1,6 +1,4 @@
 from time import sleep
-
-
 import boto3
 import json
 from watson_developer_cloud import AlchemyLanguageV1
@@ -15,16 +13,12 @@ alchemyapi = AlchemyLanguageV1(api_key='bb4bc7f058004c73d08b9983fc76e84af3701e0f
 thread_waittime =  10
 working = 10
 
+# SNS
 sns = boto3.resource('sns')
-
-# Get the queue. This returns an SQS.Queue instance
 endpoint = sns.PlatformEndpoint(arn)
-
+# SQS
 conn = boto.sqs.connect_to_region("us-east-1", aws_access_key_id='AKIAJ2SBRP7FL2443UCA', aws_secret_access_key='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')
 queue = conn.create_queue('TwittTrends')
-
-
-
 
 def parse_tweet():
     sleep(working)
@@ -32,7 +26,7 @@ def parse_tweet():
         if message.get_body() is not None:
             tweet_json = json.loads(message.get_body())
             snsMsg = {}
-            ## geo
+            ## parse tweet for location, text, and sentiment
             coordinates = tweet_json['coordinates']
             tweet_text = tweet_json['text']
             response = alchemyapi.sentiment(text=tweet_text)
@@ -43,13 +37,12 @@ def parse_tweet():
                 snsMsg['sentiment'] = sentimentResult
                 snsMsg['tweet'] = tweet_text
                 snsMsg['coordinates'] = coordinates
-                ## dump snsMsg and send message to SNS
+                # Dump snsMsg and send message to SNS
                 snsMessage = json.dumps(snsMsg)
+                print(snsMessage)
                 response = endpoint.publish(Message=snsMessage,Subject='TwittTrends')
         # Let the queue know that the message is processed
         message.delete()
-
-
 
 def main():
     parse_tweet()
