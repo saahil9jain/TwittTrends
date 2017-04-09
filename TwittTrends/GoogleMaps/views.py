@@ -25,3 +25,28 @@ def post(Request):
 	data = {'coordinates': coordinates, 'tweets': tweet}
 	print(data)
 	return JsonResponse(data)
+
+def snspoll(request):
+	context={"message":"confirmation"}
+    if request.method=="GET":
+        return render(request,'index.html')
+    else:
+        header=json.loads(request.body)
+        if header['Type']=="SubscriptionConfirmation":
+            subscribleURL=header['SubscribeURL']
+            urllib2.urlopen(subscribleURL).read()
+        elif header['Type']=="Notification":
+            message=json.loads(json.loads(header["Message"]).get('default'))
+            tweet=message['tweet']
+            lat=message['lat']
+            lon=message['lon']
+            sentiment=message['sentiment']['type']
+
+            tweet_data={
+                "tweet":tweet,
+                "coordinates":{"lat":lat,"lon":lon},
+                "sentiment":sentiment
+            }
+            requests.post(ELASTICSEARCHCLUSTER_LINK,json=tweet_data)
+            context={"message": "notification"}
+    return render(request,'index.html',context)
