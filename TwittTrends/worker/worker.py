@@ -32,7 +32,7 @@ def parse_tweet():
             response = alchemyapi.sentiment(text=tweet_text)
             if response['status'] == 'OK':
 
-                sentimentResult = response["docSentiment"]
+                sentimentResult = response["docSentiment"]["type"]
 
                 snsMsg['sentiment'] = sentimentResult
                 snsMsg['tweet'] = tweet_text

@@ -55,7 +55,7 @@ def snspoll(request):
             tweet = message['tweet']
             lat = message['lat']
             lon = message['lon']
-            sentiment = message['sentiment']['type']
+            sentiment = message['sentiment']
 
             tweet_data = {'tweet': tweet, 'coordinates': {'lat': lat,
                           'lon': lon}, 'sentiment': sentiment}
