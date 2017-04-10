@@ -51,7 +51,7 @@ def snspoll(request):
             subscribleURL=header['SubscribeURL']
             urlopen(subscribleURL).read()
         elif header['Type'] == 'Notification':
-            message = json.loads(json.loads(header['Message']))
+            message = json.loads(header['Message'])
             tweet = message['tweet']
             lat = message['coordinates']['lat']
             lon = message['coordinates']['lon']
