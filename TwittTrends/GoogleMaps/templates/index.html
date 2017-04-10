@@ -129,20 +129,20 @@
                                 icon: iconLink
                             });
 
-                          displayTweetMessage(marker, twitt);
+                          displayTweetMessage(marker, twitt, sentiment);
                           }
                         }
                       });
-                      setInterval(query, 5000)
+                      setInterval(query, 8000)
                     }
                 }
             });
         });
         // Display tweet message when market is clicked
-        function displayTweetMessage(marker, tweet){
+        function displayTweetMessage(marker, tweet, sentiment){
           marker.addListener('click', function(){
              var infowindow = new google.maps.InfoWindow();
-             var contentString = 'Tweet: '+ tweet + ', Location: '+ marker.position;
+             var contentString = 'Tweet: '+ tweet + ', Location: '+ marker.position + ', Sentiment: ' + sentiment;
              infowindow.setContent(contentString);
              infowindow.open(map,marker);
           });
